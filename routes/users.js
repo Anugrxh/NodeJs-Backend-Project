@@ -76,6 +76,7 @@ router.post('/login', async (req, res) => {
             {
                 userId : user.id,
                 isAdmin : user.isAdmin,
+                
 
             },
             secret,
@@ -111,6 +112,47 @@ router.get("/get/count", async (req, res) => {
     }
 });
   
+
+
+// Add this route to update user information
+router.put('/:id', async (req, res) => {
+  try {
+      // Check if user wants to update password
+      let updateData = {
+          name: req.body.name,
+          email: req.body.email,
+          street: req.body.street,
+          apartment: req.body.apartment,
+          city: req.body.city,
+          zip: req.body.zip,
+          country: req.body.country,
+          phone: req.body.phone
+      };
+
+      // If password is provided, hash it before updating
+      if (req.body.password) {
+          updateData.passwordHash = bcrypt.hashSync(req.body.password, 10);
+      }
+
+      // Update user and return new data without password hash
+      const updatedUser = await User.findByIdAndUpdate(
+          req.params.id,
+          updateData,
+          { new: true }  // This option returns the updated document
+      ).select('-passwordHash');
+
+      if (!updatedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      res.status(500).json({ 
+          message: 'Error updating user', 
+          error: error.message 
+      });
+  }
+});
 
 
 

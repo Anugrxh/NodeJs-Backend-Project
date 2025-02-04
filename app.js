@@ -37,6 +37,10 @@ app.use(`${api}/categories`, categoryRouter);
 const userRouter = require('./routes/users');
 app.use(`${api}/users`, userRouter);
 
+
+const ordersRoutes = require('./routes/orders');
+app.use(`${api}/orders`, ordersRoutes);
+
 // MongoDB Connection
 const mongoUrl = 'mongodb://localhost/CatagoryDb';
 mongoose.connect(mongoUrl)
